@@ -33,6 +33,7 @@ func (c *ClientConn) handleBegin() error {
 		if err := co.Begin(); err != nil {
 			return err
 		}
+		c.proxy.counter.IncrTransBeginTotal()
 	}
 	c.status |= mysql.SERVER_STATUS_IN_TRANS
 	return c.writeOK(nil)
@@ -61,6 +62,7 @@ func (c *ClientConn) commit() (err error) {
 		if e := co.Commit(); e != nil {
 			err = e
 		}
+		c.proxy.counter.IncrTransCommitTotal()
 		co.Close()
 	}
 
@@ -75,6 +77,7 @@ func (c *ClientConn) rollback() (err error) {
 		if e := co.Rollback(); e != nil {
 			err = e
 		}
+		c.proxy.counter.IncrTransRollbackTotal()
 		co.Close()
 	}
 

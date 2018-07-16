@@ -27,6 +27,10 @@ type Counter struct {
 	ClientQPS    int64
 	ErrLogTotal  int64
 	SlowLogTotal int64
+
+	TransBeginTotal int64
+	TransCommitTotal int64
+	TransRollbackTotal int64
 }
 
 func (counter *Counter) IncrClientConns() {
@@ -47,6 +51,18 @@ func (counter *Counter) IncrErrLogTotal() {
 
 func (counter *Counter) IncrSlowLogTotal() {
 	atomic.AddInt64(&counter.SlowLogTotal, 1)
+}
+
+func (counter *Counter) IncrTransBeginTotal() {
+	atomic.AddInt64(&counter.TransBeginTotal, 1)
+}
+
+func (counter *Counter) IncrTransCommitTotal() {
+	atomic.AddInt64(&counter.TransCommitTotal, 1)
+}
+
+func (counter *Counter) IncrTransRollbackTotal() {
+	atomic.AddInt64(&counter.TransRollbackTotal, 1)
 }
 
 //flush the count per second
