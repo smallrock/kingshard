@@ -430,6 +430,9 @@ func (c *ClientConn) handleShowProxyConfig() (*mysql.Resultset, error) {
 	rows = append(rows, []string{"ClientQPS", fmt.Sprintf("%d", c.proxy.counter.OldClientQPS)})
 	rows = append(rows, []string{"ErrLogTotal", fmt.Sprintf("%d", c.proxy.counter.OldErrLogTotal)})
 	rows = append(rows, []string{"SlowLogTotal", fmt.Sprintf("%d", c.proxy.counter.OldSlowLogTotal)})
+	rows = append(rows, []string{"TransBeginTotal", fmt.Sprintf("%d", c.proxy.counter.TransBeginTotal)})
+	rows = append(rows, []string{"TransCommitTotal", fmt.Sprintf("%d", c.proxy.counter.TransCommitTotal)})
+	rows = append(rows, []string{"TransRollbackTotal", fmt.Sprintf("%d", c.proxy.counter.TransRollbackTotal)})
 
 	var values [][]interface{} = make([][]interface{}, len(rows))
 	for i := range rows {

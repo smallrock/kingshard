@@ -354,6 +354,8 @@ func (s *Server) newClientConn(co net.Conn) *ClientConn {
 	c.stmtId = 0
 	c.stmts = make(map[uint32]*Stmt)
 
+	golog.Debug("Server", "newClientConn", "Client Connected", c.connectionId)
+
 	return c
 }
 
@@ -375,6 +377,8 @@ func (s *Server) onConn(c net.Conn) {
 
 		conn.Close()
 		s.counter.DecrClientConns()
+
+		golog.Debug("Server", "newClientConn","Client Close", conn.connectionId)
 	}()
 
 	if allowConnect := conn.IsAllowConnect(); allowConnect == false {
