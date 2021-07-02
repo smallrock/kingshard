@@ -81,12 +81,13 @@ func (c *ClientConn) IsAllowConnect() bool {
 	}
 	clientIP := net.ParseIP(clientHost)
 
-	ipVec := c.proxy.allowips[c.proxy.allowipsIndex]
+	current, _, _ := c.proxy.allowipsIndex.Get()
+	ipVec := c.proxy.allowips[current]
 	if ipVecLen := len(ipVec); ipVecLen == 0 {
 		return true
 	}
 	for _, ip := range ipVec {
-		if ip.Equal(clientIP) {
+		if ip.Match(clientIP) {
 			return true
 		}
 	}
@@ -231,7 +232,7 @@ func (c *ClientConn) readHandshakeResponse() error {
 			"auth", auth,
 			"client_user", c.user,
 			"config_set_user", c.user,
-			"passworld", c.proxy.users[c.user])
+			"password", c.proxy.users[c.user])
 		return mysql.NewDefaultError(mysql.ER_ACCESS_DENIED_ERROR, c.user, c.c.RemoteAddr().String(), "Yes")
 	}
 
@@ -243,7 +244,7 @@ func (c *ClientConn) readHandshakeResponse() error {
 			"checkAuth", checkAuth,
 			"client_user", c.user,
 			"config_set_user", c.user,
-			"passworld", c.proxy.users[c.user])
+			"password", c.proxy.users[c.user])
 		return mysql.NewDefaultError(mysql.ER_ACCESS_DENIED_ERROR, c.user, c.c.RemoteAddr().String(), "Yes")
 	}
 
@@ -264,6 +265,14 @@ func (c *ClientConn) readHandshakeResponse() error {
 	return nil
 }
 
+func (c *ClientConn) clean() {
+	if c.txConns != nil && len(c.txConns) > 0 {
+		for _, co := range c.txConns {
+			co.Close()
+		}
+	}
+}
+
 func (c *ClientConn) Run() {
 	defer func() {
 		r := recover()
@@ -279,7 +288,7 @@ func (c *ClientConn) Run() {
 
 		c.Close()
 	}()
-
+	defer c.clean()
 	for {
 		data, err := c.readPacket()
 

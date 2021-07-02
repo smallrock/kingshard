@@ -210,7 +210,7 @@ func (c *ClientConn) executeInNode(conn *backend.BackendConn, sql string, args [
 	}
 	execTime := float64(time.Now().UnixNano()-startTime) / float64(time.Millisecond)
 	if strings.ToLower(c.proxy.logSql[c.proxy.logSqlIndex]) != golog.LogSqlOff &&
-		execTime > float64(c.proxy.slowLogTime[c.proxy.slowLogTimeIndex]) {
+		execTime >= float64(c.proxy.slowLogTime[c.proxy.slowLogTimeIndex]) {
 		c.proxy.counter.IncrSlowLogTotal()
 		golog.OutputSql(state, "%.1fms - %s->%s:%s",
 			execTime,
@@ -265,7 +265,7 @@ func (c *ClientConn) executeInMultiNodes(conns map[string]*backend.BackendConn, 
 			}
 			execTime := float64(time.Now().UnixNano()-startTime) / float64(time.Millisecond)
 			if c.proxy.logSql[c.proxy.logSqlIndex] != golog.LogSqlOff &&
-				execTime > float64(c.proxy.slowLogTime[c.proxy.slowLogTimeIndex]) {
+				execTime >= float64(c.proxy.slowLogTime[c.proxy.slowLogTimeIndex]) {
 				c.proxy.counter.IncrSlowLogTotal()
 				golog.OutputSql(state, "%.1fms - %s->%s:%s",
 					execTime,
@@ -307,12 +307,10 @@ func (c *ClientConn) closeConn(conn *backend.BackendConn, rollback bool) {
 	if c.isInTransaction() {
 		return
 	}
-
+	defer conn.Close()
 	if rollback {
 		conn.Rollback()
 	}
-
-	conn.Close()
 }
 
 func (c *ClientConn) closeShardConns(conns map[string]*backend.BackendConn, rollback bool) {

@@ -350,6 +350,8 @@ func (c *Conn) Ping() error {
 		return err
 	}
 
+	c.pushTimestamp = time.Now().Unix()
+
 	return nil
 }
 

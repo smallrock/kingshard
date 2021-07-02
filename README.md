@@ -1,5 +1,6 @@
 #  kingshard [中文主页](README_ZH.md)
-[![Author](https://img.shields.io/badge/author-@flike-blue.svg?style=flat)](http://weibo.com/chenfei001) [![Build Status](https://travis-ci.org/flike/kingshard.svg?branch=master)](https://travis-ci.org/flike/kingshard) [![Foundation](https://img.shields.io/badge/Golang-Foundation-green.svg)](http://golangfoundation.org)
+
+[![Build Status](https://travis-ci.org/flike/kingshard.svg?branch=master)](https://travis-ci.org/flike/kingshard)
 
 ## Overview
 
@@ -11,10 +12,10 @@ kingshard is a high-performance proxy for MySQL powered by Go. Just like other m
 - Splits reads and writes
 - Client's ip ACL control.
 - Transaction in single node.
-- Support limitting the max count of connections to MySQL database.
+- Support limiting the max count of connections to MySQL database.
 - Support setting the backend database online or offline dynamically.
 - Supports prepared statement: COM_STMT_PREPARE, COM_STMT_EXECUTE, etc.
-- Support multi slaves, and loading banlance between slaves.
+- Support multi slaves, and load balancing between slaves.
 - Support reading master database forcely.
 - Support last_insert_id().
 - Support MySQL backends HA.
@@ -30,8 +31,8 @@ kingshard is a high-performance proxy for MySQL powered by Go. Just like other m
 ## Install
 ```
   1. Install Go
-  2. git clone https://github.com/flike/kingshard.git src/github.com/flike/kingshard
-  3. cd src/github.com/flike/kingshard
+  2. git clone https://github.com/flike/kingshard.git $GOPATH/src/github.com/flike/kingshard
+  3. cd $GOPATH/src/github.com/flike/kingshard
   4. source ./dev.sh
   5. make
   6. set the config file (etc/ks.yaml)
